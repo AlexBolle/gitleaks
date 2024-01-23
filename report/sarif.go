@@ -10,10 +10,11 @@ import (
 
 func writeSarif(cfg config.Config, findings []Finding, w io.WriteCloser) error {
 	sarif := Sarif{
-		Schema:  "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+		Schema:  "https://json.schemastore.org/sarif-2.1.0.json",
 		Version: "2.1.0",
 		Runs:    getRuns(cfg, findings),
 	}
+	defer w.Close()
 
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", " ")
@@ -34,6 +35,7 @@ func getTool(cfg config.Config) Tool {
 		Driver: Driver{
 			Name:            driver,
 			SemanticVersion: version,
+			InformationUri:  "https://github.com/gitleaks/gitleaks",
 			Rules:           getRules(cfg),
 		},
 	}
@@ -102,6 +104,9 @@ func getResults(findings []Finding) []Results {
 				Date:          f.Date,
 				Author:        f.Author,
 			},
+			Properties: Properties{
+				Tags: f.Tags,
+			},
 		}
 		results = append(results, r)
 	}
@@ -164,6 +169,7 @@ type Rules struct {
 type Driver struct {
 	Name            string  `json:"name"`
 	SemanticVersion string  `json:"semanticVersion"`
+	InformationUri  string  `json:"informationUri"`
 	Rules           []Rules `json:"rules"`
 }
 
@@ -200,11 +206,16 @@ type Locations struct {
 	PhysicalLocation PhysicalLocation `json:"physicalLocation"`
 }
 
+type Properties struct {
+	Tags []string `json:"tags"`
+}
+
 type Results struct {
 	Message             Message     `json:"message"`
 	RuleId              string      `json:"ruleId"`
 	Locations           []Locations `json:"locations"`
 	PartialFingerPrints `json:"partialFingerprints"`
+	Properties          Properties `json:"properties"`
 }
 
 type Runs struct {

@@ -10,10 +10,10 @@ import (
 func TelegramBotToken() *config.Rule {
 	// define rule
 	r := config.Rule{
-		Description: "Telegram Bot API Token",
+		Description: "Detected a Telegram Bot API Token, risking unauthorized bot operations and message interception on Telegram.",
 		RuleID:      "telegram-bot-api-token",
-		SecretGroup: 1,
-		Regex:       regexp.MustCompile(`(?i)(?:^|[^0-9])([0-9]{5,16}:A[a-zA-Z0-9_\-]{34})(?:$|[^a-zA-Z0-9_\-])`),
+
+		Regex: regexp.MustCompile(`(?i)(?:^|[^0-9])([0-9]{5,16}:A[a-zA-Z0-9_\-]{34})(?:$|[^a-zA-Z0-9_\-])`),
 		Keywords: []string{
 			"telegram",
 			"api",
@@ -28,9 +28,9 @@ func TelegramBotToken() *config.Rule {
 	minToken := secrets.NewSecret(numeric("5") + ":A" + alphaNumericExtendedShort("34"))
 	maxToken := secrets.NewSecret(numeric("16") + ":A" + alphaNumericExtendedShort("34"))
 	tps := []string{
-		// variable assigment
+		// variable assignment
 		generateSampleSecret("telegram", validToken),
-		// URL contaning token
+		// URL containing token
 		generateSampleSecret("url", "https://api.telegram.org/bot"+validToken+"/sendMessage"),
 		// object constructor
 		`const bot = new Telegraf("` + validToken + `")`,

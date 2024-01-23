@@ -9,9 +9,9 @@ import (
 func PrivateKey() *config.Rule {
 	// define rule
 	r := config.Rule{
-		Description: "Private Key",
+		Description: "Identified a Private Key, which may compromise cryptographic security and sensitive data encryption.",
 		RuleID:      "private-key",
-		Regex:       regexp.MustCompile(`(?i)-----BEGIN[ A-Z0-9_-]{0,100}PRIVATE KEY( BLOCK)?-----[\s\S-]*KEY----`),
+		Regex:       regexp.MustCompile(`(?i)-----BEGIN[ A-Z0-9_-]{0,100}PRIVATE KEY( BLOCK)?-----[\s\S-]*KEY( BLOCK)?----`),
 		Keywords:    []string{"-----BEGIN"},
 	}
 
@@ -23,6 +23,9 @@ anything
 abcdefghijklmnopqrstuvwxyz
 -----END RSA PRIVATE KEY-----
 `,
+		`-----BEGIN PRIVATE KEY BLOCK-----
+anything
+-----END PRIVATE KEY BLOCK-----`,
 	} // gitleaks:allow
 	return validate(r, tps, nil)
 }

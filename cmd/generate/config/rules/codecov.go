@@ -9,9 +9,8 @@ func CodecovAccessToken() *config.Rule {
 	// define rule
 	r := config.Rule{
 		RuleID:      "codecov-access-token",
-		Description: "Codecov Access Token",
-		Regex:       generateSemiGenericRegex([]string{"codecov"}, alphaNumeric("32")),
-		SecretGroup: 1,
+		Description: "Found a pattern resembling a Codecov Access Token, posing a risk of unauthorized access to code coverage reports and sensitive data.",
+		Regex:       generateSemiGenericRegex([]string{"codecov"}, alphaNumeric("32"), true),
 		Keywords: []string{
 			"codecov",
 		},

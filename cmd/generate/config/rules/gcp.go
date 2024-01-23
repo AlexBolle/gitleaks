@@ -28,9 +28,9 @@ func GCPAPIKey() *config.Rule {
 	// define rule
 	r := config.Rule{
 		RuleID:      "gcp-api-key",
-		Description: "GCP API key",
-		Regex:       generateUniqueTokenRegex(`AIza[0-9A-Za-z\\-_]{35}`),
-		SecretGroup: 1,
+		Description: "Uncovered a GCP API key, which could lead to unauthorized access to Google Cloud services and data breaches.",
+		Regex:       generateUniqueTokenRegex(`AIza[0-9A-Za-z\\-_]{35}`, true),
+
 		Keywords: []string{
 			"AIza",
 		},

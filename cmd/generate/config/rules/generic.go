@@ -8,7 +8,7 @@ func GenericCredential() *config.Rule {
 	// define rule
 	r := config.Rule{
 		RuleID:      "generic-api-key",
-		Description: "Generic API Key",
+		Description: "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
 		Regex: generateSemiGenericRegex([]string{
 			"key",
 			"api",
@@ -19,8 +19,7 @@ func GenericCredential() *config.Rule {
 			"password",
 			"auth",
 			"access",
-		}, `[0-9a-z\-_.=]{10,150}`),
-		SecretGroup: 1,
+		}, `[0-9a-z\-_.=]{10,150}`, true),
 		Keywords: []string{
 			"key",
 			"api",

@@ -9,10 +9,10 @@ func OktaAccessToken() *config.Rule {
 	// define rule
 	r := config.Rule{
 		RuleID:      "okta-access-token",
-		Description: "Okta Access Token",
+		Description: "Identified an Okta Access Token, which may compromise identity management services and user authentication data.",
 		Regex: generateSemiGenericRegex([]string{"okta"},
-			alphaNumericExtended("42")),
-		SecretGroup: 1,
+			alphaNumericExtended("42"), true),
+
 		Keywords: []string{
 			"okta",
 		},

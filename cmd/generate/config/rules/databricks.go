@@ -8,9 +8,9 @@ import (
 func Databricks() *config.Rule {
 	// define rule
 	r := config.Rule{
-		Description: "Databricks API token",
+		Description: "Uncovered a Databricks API token, which may compromise big data analytics platforms and sensitive data processing.",
 		RuleID:      "databricks-api-token",
-		Regex:       generateUniqueTokenRegex(`dapi[a-h0-9]{32}`),
+		Regex:       generateUniqueTokenRegex(`dapi[a-h0-9]{32}`, true),
 		Keywords:    []string{"dapi"},
 	}
 

@@ -9,9 +9,9 @@ func ReadMe() *config.Rule {
 	// define rule
 	r := config.Rule{
 		RuleID:      "readme-api-token",
-		Description: "Readme API token",
-		Regex:       generateUniqueTokenRegex(`rdme_[a-z0-9]{70}`),
-		SecretGroup: 1,
+		Description: "Detected a Readme API token, risking unauthorized documentation management and content exposure.",
+		Regex:       generateUniqueTokenRegex(`rdme_[a-z0-9]{70}`, true),
+
 		Keywords: []string{
 			"rdme_",
 		},

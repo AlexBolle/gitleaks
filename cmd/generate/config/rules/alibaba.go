@@ -8,9 +8,9 @@ import (
 func AlibabaAccessKey() *config.Rule {
 	// define rule
 	r := config.Rule{
-		Description: "Alibaba AccessKey ID",
+		Description: "Detected an Alibaba Cloud AccessKey ID, posing a risk of unauthorized cloud resource access and potential data compromise.",
 		RuleID:      "alibaba-access-key-id",
-		Regex:       generateUniqueTokenRegex(`(LTAI)(?i)[a-z0-9]{20}`),
+		Regex:       generateUniqueTokenRegex(`(LTAI)(?i)[a-z0-9]{20}`, true),
 		Keywords:    []string{"LTAI"},
 	}
 
@@ -25,12 +25,12 @@ func AlibabaAccessKey() *config.Rule {
 func AlibabaSecretKey() *config.Rule {
 	// define rule
 	r := config.Rule{
-		Description: "Alibaba Secret Key",
+		Description: "Discovered a potential Alibaba Cloud Secret Key, potentially allowing unauthorized operations and data access within Alibaba Cloud.",
 		RuleID:      "alibaba-secret-key",
 		Regex: generateSemiGenericRegex([]string{"alibaba"},
-			alphaNumeric("30")),
-		SecretGroup: 1,
-		Keywords:    []string{"alibaba"},
+			alphaNumeric("30"), true),
+
+		Keywords: []string{"alibaba"},
 	}
 
 	// validate

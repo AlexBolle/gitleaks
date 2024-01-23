@@ -9,9 +9,9 @@ func MailChimp() *config.Rule {
 	// define rule
 	r := config.Rule{
 		RuleID:      "mailchimp-api-key",
-		Description: "Mailchimp API key",
-		Regex:       generateSemiGenericRegex([]string{"mailchimp"}, `[a-f0-9]{32}-us20`),
-		SecretGroup: 1,
+		Description: "Identified a Mailchimp API key, potentially compromising email marketing campaigns and subscriber data.",
+		Regex:       generateSemiGenericRegex([]string{"mailchimp"}, `[a-f0-9]{32}-us20`, true),
+
 		Keywords: []string{
 			"mailchimp",
 		},

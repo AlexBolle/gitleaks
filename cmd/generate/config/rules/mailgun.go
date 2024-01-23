@@ -9,9 +9,9 @@ func MailGunPrivateAPIToken() *config.Rule {
 	// define rule
 	r := config.Rule{
 		RuleID:      "mailgun-private-api-token",
-		Description: "Mailgun private API token",
-		Regex:       generateSemiGenericRegex([]string{"mailgun"}, `key-[a-f0-9]{32}`),
-		SecretGroup: 1,
+		Description: "Found a Mailgun private API token, risking unauthorized email service operations and data breaches.",
+		Regex:       generateSemiGenericRegex([]string{"mailgun"}, `key-[a-f0-9]{32}`, true),
+
 		Keywords: []string{
 			"mailgun",
 		},
@@ -28,9 +28,9 @@ func MailGunPubAPIToken() *config.Rule {
 	// define rule
 	r := config.Rule{
 		RuleID:      "mailgun-pub-key",
-		Description: "Mailgun public validation key",
-		Regex:       generateSemiGenericRegex([]string{"mailgun"}, `pubkey-[a-f0-9]{32}`),
-		SecretGroup: 1,
+		Description: "Discovered a Mailgun public validation key, which could expose email verification processes and associated data.",
+		Regex:       generateSemiGenericRegex([]string{"mailgun"}, `pubkey-[a-f0-9]{32}`, true),
+
 		Keywords: []string{
 			"mailgun",
 		},
@@ -47,9 +47,9 @@ func MailGunSigningKey() *config.Rule {
 	// define rule
 	r := config.Rule{
 		RuleID:      "mailgun-signing-key",
-		Description: "Mailgun webhook signing key",
-		Regex:       generateSemiGenericRegex([]string{"mailgun"}, `[a-h0-9]{32}-[a-h0-9]{8}-[a-h0-9]{8}`),
-		SecretGroup: 1,
+		Description: "Uncovered a Mailgun webhook signing key, potentially compromising email automation and data integrity.",
+		Regex:       generateSemiGenericRegex([]string{"mailgun"}, `[a-h0-9]{32}-[a-h0-9]{8}-[a-h0-9]{8}`, true),
+
 		Keywords: []string{
 			"mailgun",
 		},

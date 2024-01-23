@@ -15,11 +15,13 @@ const (
 	caseInsensitive = `(?i)`
 
 	// identifier prefix (just an ignore group)
-	identifierPrefix = `(?:`
-	identifierSuffix = `)(?:[0-9a-z\-_\t .]{0,20})(?:[\s|']|[\s|"]){0,3}`
+	identifierCaseInsensitivePrefix = `(?i:`
+	identifierCaseInsensitiveSuffix = `)`
+	identifierPrefix                = `(?:`
+	identifierSuffix                = `)(?:[0-9a-z\-_\t .]{0,20})(?:[\s|']|[\s|"]){0,3}`
 
 	// commonly used assignment operators or function call
-	operator = `(?:=|>|:=|\|\|:|<=|=>|:)`
+	operator = `(?:=|>|:{1,3}=|\|\|:|<=|=>|:|\?=)`
 
 	// boundaries for the secret
 	// \x60 = `
@@ -28,12 +30,18 @@ const (
 	secretSuffix       = `)(?:['|\"|\n|\r|\s|\x60|;]|$)`
 )
 
-func generateSemiGenericRegex(identifiers []string, secretRegex string) *regexp.Regexp {
+func generateSemiGenericRegex(identifiers []string, secretRegex string, isCaseInsensitive bool) *regexp.Regexp {
 	var sb strings.Builder
-	sb.WriteString(caseInsensitive)
-	sb.WriteString(identifierPrefix)
-	sb.WriteString(strings.Join(identifiers, "|"))
-	sb.WriteString(identifierSuffix)
+	// The identifiers should always be case-insensitive.
+	// This is inelegant but prevents an extraneous `(?i:)` from being added to the pattern; it could be removed.
+	if isCaseInsensitive {
+		sb.WriteString(caseInsensitive)
+		writeIdentifiers(&sb, identifiers)
+	} else {
+		sb.WriteString(identifierCaseInsensitivePrefix)
+		writeIdentifiers(&sb, identifiers)
+		sb.WriteString(identifierCaseInsensitiveSuffix)
+	}
 	sb.WriteString(operator)
 	sb.WriteString(secretPrefix)
 	sb.WriteString(secretRegex)
@@ -41,9 +49,17 @@ func generateSemiGenericRegex(identifiers []string, secretRegex string) *regexp.
 	return regexp.MustCompile(sb.String())
 }
 
-func generateUniqueTokenRegex(secretRegex string) *regexp.Regexp {
+func writeIdentifiers(sb *strings.Builder, identifiers []string) {
+	sb.WriteString(identifierPrefix)
+	sb.WriteString(strings.Join(identifiers, "|"))
+	sb.WriteString(identifierSuffix)
+}
+
+func generateUniqueTokenRegex(secretRegex string, isCaseInsensitive bool) *regexp.Regexp {
 	var sb strings.Builder
-	sb.WriteString(caseInsensitive)
+	if isCaseInsensitive {
+		sb.WriteString(caseInsensitive)
+	}
 	sb.WriteString(secretPrefixUnique)
 	sb.WriteString(secretRegex)
 	sb.WriteString(secretSuffix)
@@ -75,7 +91,7 @@ func validate(r config.Rule, truePositives []string, falsePositives []string) *c
 	}
 	for _, fp := range falsePositives {
 		if len(d.DetectString(fp)) != 0 {
-			log.Fatal().Msgf("Failed to validate (fp) [%s]", r.RuleID)
+			log.Fatal().Msgf("Failed to validate. For rule ID [%s], false positive [%s] was detected by regexp [%s]", r.RuleID, fp, r.Regex)
 		}
 	}
 	return &r
